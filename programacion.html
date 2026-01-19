@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Programación - Marketing Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Automatización<br>Marketing Digital</h2>
+
+        <nav>
+            <a href="dashboard.html">Inicio</a>
+            <a href="publicaciones.html">Publicaciones</a>
+            <a href="programacion.html" class="active">Programación</a>
+            <a href="estrategias.html">Estrategias</a>
+            <a href="redes.html">Redes Sociales</a>
+            <a href="admin.html">Administración</a>
+        </nav>
+
+        <div class="user-box">
+            <p>Matías Castro</p>
+            <span>Administrador</span>
+            <a href="index.html" class="logout-btn">Cerrar sesión</a>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="content">
+
+        <div class="topbar">
+            <h1>Publicaciones Programadas</h1>
+            <button class="primary-btn" id="btnNueva">+ Programar Publicación</button>
+        </div>
+
+        <section class="panel">
+            <h3>Listado de Publicaciones Programadas</h3>
+
+            <table class="crud-table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Red Social</th>
+                        <th>Fecha Programada</th>
+                        <th>Imágenes</th>
+                        <th>Tiempo Ahorrado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProgramadas"></tbody>
+            </table>
+        </section>
+
+    </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3>Programar Publicación</h3>
+
+        <form id="formProgramacion">
+            <label>Título</label>
+            <input type="text" id="titulo" required>
+
+            <label>Red Social</label>
+            <select id="red">
+                <option>Instagram</option>
+                <option>Facebook</option>
+                <option>LinkedIn</option>
+            </select>
+
+            <label>Fecha Programada</label>
+            <input type="date" id="fechaProgramada" required>
+
+            <label>Imágenes (mínimo 1, máximo 10)</label>
+            <input type="file" id="imagenes" accept="image/*" multiple required>
+
+            <button type="submit">Guardar</button>
+            <button type="button" id="cerrarModal">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script src="js/programacion.js"></script>
+</body>
+</html>

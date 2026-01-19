@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Marketing Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">
+            Automatización<br>
+            Marketing Digital
+        </h2>
+
+        <nav>
+            <a href="dashboard.html" class="active">Inicio</a>
+            <a href="publicaciones.html">Publicaciones</a>
+            <a href="programacion.html">Programación</a>
+            <a href="estrategias.html">Estrategias</a>
+            <a href="redes.html">Redes Sociales</a>
+            <a href="admin.html">Administración</a>
+        </nav>
+
+        <div class="user-box">
+            <p>Matías Castro</p>
+            <span>Administrador</span>
+            <a href="index.html" class="logout-btn">Cerrar sesión</a>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <h1>Panel Principal</h1>
+            <a href="publicaciones.html" class="primary-btn">+ Crear Publicación</a>
+        </div>
+
+        <!-- TARJETAS RESUMEN -->
+        <section class="stats">
+            <div class="stat-card">
+                <h3>Publicaciones</h3>
+                <p class="big" id="totalPublicaciones">0</p>
+                <span>Total registradas</span>
+            </div>
+
+            <div class="stat-card">
+                <h3>Tiempo Ahorrado</h3>
+                <p class="big" id="tiempoTotal">0 h</p>
+                <span>Automatización</span>
+            </div>
+
+            <div class="stat-card">
+                <h3>Nuevos Seguidores</h3>
+                <p class="big">0</p>
+                <span>Últimos 7 días</span>
+            </div>
+        </section>
+
+        <!-- BLOQUES -->
+        <section class="panels">
+            <div class="panel">
+                <h3>Resumen de Publicaciones</h3>
+                <ul id="listaPublicaciones">
+                    <!-- JS carga publicaciones e imágenes -->
+                </ul>
+            </div>
+
+            <div class="panel">
+                <h3>Grafico Publicaciones</h3>
+                <canvas id="graficoPublicaciones" width="400" height="200"></canvas>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const lista = document.getElementById("listaPublicaciones");
+    const totalElem = document.getElementById("totalPublicaciones");
+    const tiempoTotalElem = document.getElementById("tiempoTotal");
+
+    let publicadas = JSON.parse(localStorage.getItem("publicaciones")) || [];
+    let programadas = JSON.parse(localStorage.getItem("programadas")) || [];
+
+    totalElem.textContent = publicadas.length + programadas.length;
+
+    function formatFecha(fechaStr) {
+        let date = fechaStr ? new Date(fechaStr) : new Date();
+        if (isNaN(date.getTime())) date = new Date();
+        const dia = date.getDate().toString().padStart(2,"0");
+        const mes = (date.getMonth()+1).toString().padStart(2,"0");
+        const año = date.getFullYear();
+        return `${dia}/${mes}/${año}`;
+    }
+
+    function formatFechaHora(fechaStr) {
+        let date = fechaStr ? new Date(fechaStr) : new Date();
+        if (isNaN(date.getTime())) date = new Date();
+        const dia = date.getDate().toString().padStart(2,"0");
+        const mes = (date.getMonth()+1).toString().padStart(2,"0");
+        const año = date.getFullYear();
+        const horas = date.getHours().toString().padStart(2,"0");
+        const minutos = date.getMinutes().toString().padStart(2,"0");
+        return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+    }
+
+    function mostrarTiempoTotal() {
+        let totalHoras = 0;
+        publicadas.forEach(pub => totalHoras += (pub.duracionApp || 60)/60);
+        programadas.forEach(pub => totalHoras += (pub.duracionApp || 60)/60);
+        tiempoTotalElem.textContent = `${Math.round(totalHoras)} h`;
+    }
+
+    function renderLista() {
+        lista.innerHTML = "";
+
+        let todas = [];
+
+        publicadas.forEach(pub => {
+            todas.push({...pub, tipo:"publicada", fechaMostrar: formatFechaHora(pub.fecha)});
+        });
+
+        programadas.forEach(pub => {
+            todas.push({...pub, tipo:"programada", fechaMostrar: formatFecha(pub.fechaProgramada)});
+        });
+
+        todas.forEach(pub => {
+            let imagenesHTML = "";
+            if(pub.imagenes && pub.imagenes.length){
+                pub.imagenes.forEach(img => {
+                    imagenesHTML += `<img src="${img}" class="mini-img">`;
+                });
+            }
+            lista.innerHTML += `
+                <li>
+                    <strong>${pub.titulo}</strong>
+                    <small>${pub.red} | ${pub.fechaMostrar}</small>
+                    <div class="img-preview">${imagenesHTML}</div>
+                    <div class="tiempo-ahorrado">Tiempo ahorrado: ${pub.duracionApp || 60} min</div>
+                    ${pub.tipo === "programada"
+                        ? `<div class="programada-label">Programada</div>`
+                        : `<div class="publicada-label">Publicado</div>`}
+                </li>
+            `;
+        });
+
+        mostrarTiempoTotal();
+    }
+
+    renderLista();
+
+    // GRÁFICO DE PUBLICACIONES
+    const ctx = document.getElementById('graficoPublicaciones').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Publicadas','Programadas'],
+            datasets: [{
+                label: 'Cantidad de Publicaciones',
+                data: [publicadas.length, programadas.length],
+                backgroundColor: ['#5cb85c','#f0ad4e']
+            }]
+        },
+        options: {
+            responsive:true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Publicaciones por Estado' }
+            },
+            scales: {
+                y: { beginAtZero:true, precision:0 }
+            }
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>

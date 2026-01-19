@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estrategias</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Estilos de estrellas */
+        .star-rating {
+            display: flex;
+            gap: 4px;
+            margin-top: 5px;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 20px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }
+
+        .guardarComentario, .borrarComentario {
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .guardarComentario {
+            background-color: #5cb85c;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            margin-top: 5px;
+        }
+
+        .borrarComentario {
+            background-color: #d9534f;
+            color: #fff;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Automatización<br>Marketing Digital</h2>
+
+        <nav>
+            <a href="dashboard.html">Inicio</a>
+            <a href="publicaciones.html">Publicaciones</a>
+            <a href="programacion.html">Programación</a>
+            <a class="active">Estrategias</a>
+            <a href="redes.html">Redes Sociales</a>
+            <a href="admin.html">Administración</a>
+        </nav>
+
+        <div class="user-box">
+            <p>Matías Castro</p>
+            <span>Administrador</span>
+            <button onclick="location.href='index.html'">Cerrar sesión</button>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="content">
+        <h1>Estrategias de Marketing</h1>
+        <p>Selecciona el tipo de empresa para recibir sugerencias personalizadas.</p>
+
+        <!-- FORMULARIO -->
+        <div class="panel">
+            <form id="formEmpresa">
+                <label for="tipoEmpresa">Tipo de empresa:</label>
+                <select id="tipoEmpresa" required>
+                    <option value="">--Selecciona una opción--</option>
+                    <option value="pequena_empresa">Pequeña Empresa / Venta de madera / Barbería / Peluquería</option>
+                    <option value="negocio_local">Negocio Local / Minimarket / Botillería</option>
+                    <option value="ecommerce">E-commerce / Venta Online</option>
+                    <option value="restaurante">Restaurante / Cafetería / Comida rápida / Heladería</option>
+                    <option value="moda">Moda / Ropa / Zapatería / Accesorios</option>
+                    <option value="tecnologia">Tecnología / Startups / Artículos electrónicos</option>
+                    <option value="salud">Salud / Bienestar / Belleza</option>
+                    <option value="educacion">Educación / Cursos / Inglés</option>
+                    <option value="otros">Otros</option>
+                </select>
+                <button type="submit" class="primary-btn">Cargar Estrategias</button>
+            </form>
+        </div>
+
+        <!-- PANEL DE ESTRATEGIAS -->
+        <div class="panel" id="estrategiasPanel" style="display:none;">
+            <h3>Consejos y Estrategias</h3>
+            <ul id="listaEstrategias" style="list-style:none; padding:0; margin:0;">
+                <!-- JS cargará estrategias según la empresa -->
+            </ul>
+        </div>
+
+    </main>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const formEmpresa = document.getElementById("formEmpresa");
+    const tipoEmpresaSelect = document.getElementById("tipoEmpresa");
+    const estrategiasPanel = document.getElementById("estrategiasPanel");
+    const listaEstrategias = document.getElementById("listaEstrategias");
+
+    const estrategiasData = {
+    "pequena_empresa": [
+        "Crea promociones locales atractivas para tu comunidad, usando carteles físicos y digitales. Combina descuentos con eventos en el local.",
+        "Usa Instagram y Facebook para mostrar productos y servicios. Publica historias diarias mostrando procesos y resultados.",
+        "Comparte historias de clientes satisfechos para generar confianza. Incluye fotos y testimonios reales.",
+        "Haz tutoriales cortos sobre el uso de tus productos o servicios. Publica en redes sociales y WhatsApp.",
+        "Implementa un programa de referidos ofreciendo descuentos a clientes que traigan amigos.",
+        "Optimiza tu perfil en Google My Business: agrega fotos, horarios y reseñas.",
+        "Crea flyers digitales y compártelos en grupos locales y redes sociales.",
+        "Publica reseñas de clientes y responde comentarios, demostrando atención y cercanía.",
+        "Ofrece descuentos por primera compra para atraer nuevos clientes.",
+        "Crea un calendario de publicaciones con temáticas semanales y contenido variado.",
+        "Haz videos mostrando procesos internos y cómo se elaboran tus productos.",
+        "Organiza sorteos de productos para aumentar el engagement en redes.",
+        "Promociona productos destacados semanalmente con fotos y descripciones atractivas.",
+        "Crea un grupo de comunidad online donde los clientes puedan interactuar.",
+        "Envía newsletters con ofertas y novedades cada 15 días.",
+        "Haz colaboraciones locales con otros negocios complementarios.",
+        "Comparte tips de tu rubro que puedan ayudar a tus clientes.",
+        "Publica encuestas para conocer las preferencias y opiniones de tus clientes.",
+        "Usa hashtags locales para mejorar el alcance de tus publicaciones.",
+        "Realiza demostraciones en vivo online de tus productos o servicios."
+    ],
+    "negocio_local": [
+        "Aprovecha Google My Business para mostrar tu local, horarios, ubicación y reseñas.",
+        "Crea promociones de temporada con descuentos o combos atractivos para clientes recurrentes.",
+        "Publica fotos y videos del local para generar confianza y cercanía.",
+        "Usa WhatsApp Business para atención rápida, catálogos y promociones directas.",
+        "Organiza sorteos y concursos para atraer clientes a tu local.",
+        "Promociona productos nuevos con contenido visual llamativo.",
+        "Comparte historias de clientes satisfechos para generar prueba social.",
+        "Organiza eventos presenciales y digitales que fomenten la interacción con la marca.",
+        "Crea carteles digitales que se puedan compartir en redes sociales y grupos locales.",
+        "Incorpora reseñas de clientes en publicaciones y responde siempre los comentarios.",
+        "Usa encuestas para conocer la opinión sobre productos o servicios.",
+        "Ofrece paquetes especiales para fechas clave o temporada.",
+        "Promociona ventas flash con avisos en redes sociales y WhatsApp.",
+        "Crea un boletín mensual con novedades y ofertas.",
+        "Publica tips relacionados con tu negocio para educar a tus clientes.",
+        "Implementa un programa de fidelidad que premie la recurrencia de clientes.",
+        "Haz videos mostrando el día a día de tu negocio para generar cercanía.",
+        "Publica fotos atractivas de productos con buena iluminación y composición.",
+        "Organiza concursos con premios que incentiven la participación del público.",
+        "Involucra a los clientes etiquetando el negocio en sus publicaciones."
+    ],
+    "ecommerce": [
+        "Optimiza la tienda online para móviles, asegurando rapidez y facilidad de navegación.",
+        "Usa anuncios segmentados en redes sociales para llegar a tu público objetivo.",
+        "Publica testimonios y reseñas de clientes que compraron productos.",
+        "Crea contenido relacionado con tus productos que aporte valor a tus clientes.",
+        "Envía emails marketing con ofertas personalizadas y novedades.",
+        "Ofrece cupones de descuento para incentivar la compra.",
+        "Colabora con influencers relevantes que promuevan tus productos.",
+        "Haz tutoriales mostrando cómo usar tus productos correctamente.",
+        "Realiza comparaciones con productos similares para destacar tus ventajas.",
+        "Planifica un calendario semanal de publicaciones con temáticas variadas.",
+        "Graba unboxing de productos para generar interés y emoción.",
+        "Crea promociones de productos complementarios o packs especiales.",
+        "Ofrece envíos gratuitos para aumentar conversiones.",
+        "Publica contenido interactivo como encuestas y preguntas sobre productos.",
+        "Muestra historias de clientes satisfechos usando tus productos.",
+        "Crea videos cortos destacando características y beneficios de tus productos.",
+        "Promociona los productos más vendidos de manera destacada.",
+        "Realiza encuestas de satisfacción para mejorar la experiencia de compra.",
+        "Optimiza fotos y descripciones de productos para atraer clientes.",
+        "Aplica remarketing a visitantes que no completaron la compra."
+    ],
+    "restaurante": [
+        "Comparte fotos y videos de platos con buena iluminación y presentación.",
+        "Crea promociones del menú semanal con descuentos o combos especiales.",
+        "Publica recetas y Reels en Instagram mostrando cómo preparar ciertos platos.",
+        "Realiza encuestas sobre sabores y preferencias de los clientes.",
+        "Invita a los clientes a etiquetar el negocio en sus publicaciones.",
+        "Haz videos mostrando la preparación de los platos y detrás de escenas.",
+        "Promociona menús especiales del día y ofertas exclusivas online.",
+        "Ofrece descuentos por pedidos online o reservas anticipadas.",
+        "Organiza eventos temáticos que atraigan clientes al local.",
+        "Publica encuestas de satisfacción y responde los comentarios de los clientes.",
+        "Resalta reseñas positivas y agradece públicamente a los clientes.",
+        "Comparte historias de clientes disfrutando tus productos.",
+        "Colabora con influencers gastronómicos locales para ganar visibilidad.",
+        "Comparte tips de gastronomía y preparación de alimentos.",
+        "Promociona combos y platos destacados semanalmente.",
+        "Crea contenido de temporada alineado a festividades o eventos.",
+        "Publica recetas fáciles que tus clientes puedan intentar en casa.",
+        "Organiza concursos de recetas o comida para generar engagement.",
+        "Usa hashtags gastronómicos para mejorar el alcance de tus publicaciones.",
+        "Muestra detrás de cámaras del restaurante para humanizar la marca."
+    ],
+    "moda": [
+        "Publica looks del día mostrando combinaciones y tendencias actuales.",
+        "Usa influencers locales para mostrar tus productos a más personas.",
+        "Haz videos explicando cómo combinar accesorios o prendas.",
+        "Promociona productos exclusivos y ediciones limitadas.",
+        "Comparte tips de moda y cuidado de ropa con tu audiencia.",
+        "Realiza encuestas sobre estilos preferidos de tus clientes.",
+        "Transmite en vivo mostrando nuevos productos y colecciones.",
+        "Crea tutoriales de combinaciones y outfits recomendados.",
+        "Ofrece cupones de descuento por redes sociales.",
+        "Comparte reseñas y fotos de clientes usando tus productos.",
+        "Enseña tips de cuidado de prendas y accesorios.",
+        "Publica contenido interactivo sobre tendencias de moda.",
+        "Muestra fotos profesionales de tus productos y looks.",
+        "Organiza concursos de estilo y outfits con premios.",
+        "Envía newsletters con ofertas y novedades de la tienda.",
+        "Comparte fotos de clientes usando tus productos.",
+        "Realiza sorteos de accesorios o prendas seleccionadas.",
+        "Muestra tendencias internacionales adaptadas al mercado local.",
+        "Haz videos de unboxing y reviews de productos.",
+        "Crea guías de combinación para diferentes ocasiones."
+    ],
+    "tecnologia": [
+        "Publica tutoriales y unboxing de nuevos gadgets o dispositivos.",
+        "Haz reviews detalladas de productos tecnológicos.",
+        "Crea videos mostrando características innovadoras de dispositivos.",
+        "Comparte noticias y actualizaciones de tecnología.",
+        "Realiza comparaciones con productos similares de la competencia.",
+        "Transmite en vivo mostrando gadgets y explicando su funcionamiento.",
+        "Haz encuestas sobre tecnología y preferencias de los usuarios.",
+        "Crea guías paso a paso de instalación o configuración.",
+        "Promociona lanzamientos de productos y servicios tecnológicos.",
+        "Colabora con influencers tech para amplificar tu alcance.",
+        "Da consejos de mantenimiento y optimización de dispositivos.",
+        "Comparte tendencias tecnológicas y novedades del sector.",
+        "Ofrece códigos de descuento o promociones especiales.",
+        "Realiza videos de aplicaciones útiles para diferentes dispositivos.",
+        "Comparte casos de éxito usando tus productos o servicios.",
+        "Crea contenido educativo sobre tecnología y uso de gadgets.",
+        "Publica tutoriales de instalación y configuración.",
+        "Muestra fotos de productos y accesorios con buena calidad.",
+        "Publica reseñas de clientes satisfechos.",
+        "Organiza sorteos tecnológicos para atraer engagement."
+    ],
+    "salud": [
+        "Publica tips de bienestar y hábitos saludables diarios.",
+        "Crea videos de rutinas de ejercicios o técnicas de relajación.",
+        "Comparte testimonios de clientes satisfechos con tus servicios.",
+        "Da consejos de nutrición y alimentación balanceada.",
+        "Promociona servicios o productos relacionados con la salud.",
+        "Publica infografías sobre hábitos saludables.",
+        "Comparte recetas saludables y fáciles de preparar.",
+        "Realiza encuestas sobre bienestar y satisfacción de clientes.",
+        "Ofrece paquetes de servicios personalizados.",
+        "Publica casos de éxito de clientes que mejoraron su salud.",
+        "Haz tutoriales de ejercicios y rutinas específicas.",
+        "Comparte noticias y novedades sobre salud y bienestar.",
+        "Da consejos de belleza natural y cuidado personal.",
+        "Publica tips diarios en Instagram Stories sobre bienestar.",
+        "Ofrece descuentos por membresías o consultas.",
+        "Comparte rutinas de autocuidado y mindfulness.",
+        "Promociona talleres de bienestar y charlas saludables.",
+        "Transmite en vivo con tips de salud y rutinas.",
+        "Publica contenido motivacional y educativo sobre salud.",
+        "Crea retos semanales de hábitos saludables para clientes."
+    ],
+    "educacion": [
+        "Comparte consejos de estudio y técnicas de aprendizaje efectivas.",
+        "Publica cursos, talleres o clases disponibles online y presenciales.",
+        "Crea videos explicativos cortos sobre temas de interés.",
+        "Realiza quizzes interactivos para evaluar conocimientos.",
+        "Promociona clases, talleres o cursos especiales.",
+        "Publica resúmenes de temas importantes para tus estudiantes.",
+        "Haz tutoriales paso a paso sobre habilidades o conocimientos.",
+        "Comparte historias de éxito de alumnos destacados.",
+        "Ofrece descuentos especiales en cursos o materiales educativos.",
+        "Publica tips para mejorar el aprendizaje y concentración.",
+        "Crea contenido interactivo y dinámico para estudiantes.",
+        "Transmite en vivo clases o sesiones educativas.",
+        "Ofrece material descargable complementario a tus cursos.",
+        "Publica noticias relevantes del sector educativo.",
+        "Da consejos sobre preparación de exámenes y evaluaciones.",
+        "Recomienda libros, cursos o recursos útiles para estudiantes.",
+        "Crea encuestas para conocer necesidades y preferencias de aprendizaje.",
+        "Realiza quizzes de refuerzo y práctica para tus alumnos.",
+        "Publica videos motivacionales sobre aprendizaje y desarrollo.",
+        "Enseña técnicas efectivas para aprender online y presencialmente."
+    ],
+    "otros": [
+        "Adapta el contenido y estrategias según el tipo de negocio.",
+        "Publica casos de éxito de clientes o negocios similares.",
+        "Comparte tips relevantes y consejos prácticos para emprendedores.",
+        "Realiza encuestas a tu audiencia para mejorar productos o servicios.",
+        "Publica fotos y videos atractivos de tus productos o servicios.",
+        "Promociona novedades y lanzamientos con anticipación.",
+        "Organiza concursos y sorteos para atraer engagement.",
+        "Comparte testimonios y experiencias de clientes.",
+        "Crea tutoriales, guías o manuales sobre tu negocio.",
+        "Publica noticias relevantes del sector en tus redes.",
+        "Usa anuncios segmentados para llegar a tu público objetivo.",
+        "Genera contenido educativo que aporte valor a tu audiencia.",
+        "Promociona servicios adicionales o complementarios.",
+        "Colabora con otros negocios o emprendedores para ampliar alcance.",
+        "Envía newsletters con tips, ofertas y novedades.",
+        "Publica videos en redes sociales mostrando productos o servicios.",
+        "Crea estrategias de temporada para fechas especiales.",
+        "Realiza encuestas interactivas para conocer preferencias del público.",
+        "Publica fotos creativas y contenido visual atractivo.",
+        "Genera contenido viral y humorístico adaptado a tu marca."
+    ]
+};
+
+
+    const storageComentarios = JSON.parse(localStorage.getItem("comentariosEstrategias") || "{}");
+
+    formEmpresa.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const tipo = tipoEmpresaSelect.value;
+        if (!tipo) return alert("Selecciona una opción");
+        localStorage.setItem("tipoEmpresa", tipo);
+        mostrarEstrategias(tipo);
+    });
+
+    function mostrarEstrategias(tipo) {
+        listaEstrategias.innerHTML = "";
+        estrategiasPanel.style.display = "block";
+
+        const estrategias = estrategiasData[tipo] || [];
+
+        estrategias.forEach((estrategia, index) => {
+            const li = document.createElement("li");
+            li.style.background = "#f9fbfe";
+            li.style.border = "1px solid #e1e7f0";
+            li.style.borderRadius = "10px";
+            li.style.padding = "12px";
+            li.style.marginBottom = "15px";
+
+            const clave = tipo + "_" + index;
+            const comentariosGuardados = storageComentarios[clave] || [];
+
+            li.innerHTML = `
+                <strong>Estrategia ${index + 1}:</strong>
+                <p>${estrategia}</p>
+
+                <div class="comentarios-container">
+                    <textarea placeholder="Agregar comentario..." rows="2"></textarea>
+                    <button class="guardarComentario">Guardar</button>
+                    <ul class="comentarios-lista" style="list-style:none; padding-left:0; margin-top:5px;"></ul>
+                </div>
+
+                <div class="star-rating">
+                    <input type="radio" id="star5-${clave}" name="rating-${clave}" value="5"><label for="star5-${clave}">★</label>
+                    <input type="radio" id="star4-${clave}" name="rating-${clave}" value="4"><label for="star4-${clave}">★</label>
+                    <input type="radio" id="star3-${clave}" name="rating-${clave}" value="3"><label for="star3-${clave}">★</label>
+                    <input type="radio" id="star2-${clave}" name="rating-${clave}" value="2"><label for="star2-${clave}">★</label>
+                    <input type="radio" id="star1-${clave}" name="rating-${clave}" value="1"><label for="star1-${clave}">★</label>
+                </div>
+            `;
+
+            listaEstrategias.appendChild(li);
+
+            const comentariosLista = li.querySelector(".comentarios-lista");
+            const btnGuardar = li.querySelector(".guardarComentario");
+            const textarea = li.querySelector("textarea");
+            const estrellasInputs = li.querySelectorAll('input[name="rating-'+clave+'"]');
+
+            // Cargar comentarios guardados
+            comentariosGuardados.forEach(c => {
+                const commentLi = document.createElement("li");
+                commentLi.innerHTML = `${c.texto} <button class="borrarComentario">Eliminar</button>`;
+                comentariosLista.appendChild(commentLi);
+
+                const borrarBtn = commentLi.querySelector(".borrarComentario");
+                borrarBtn.addEventListener("click", () => {
+                    comentariosLista.removeChild(commentLi);
+                    const indexC = storageComentarios[clave].findIndex(cc => cc.texto === c.texto && cc.estrellas === c.estrellas);
+                    if (indexC > -1) {
+                        storageComentarios[clave].splice(indexC, 1);
+                        localStorage.setItem("comentariosEstrategias", JSON.stringify(storageComentarios));
+                    }
+                });
+            });
+
+            // Restaurar calificación guardada si existe
+            if (comentariosGuardados.length > 0) {
+                const ultima = comentariosGuardados[comentariosGuardados.length -1];
+                if(ultima.estrellas){
+                    const inputEstrella = li.querySelector(`input[value="${ultima.estrellas}"]`);
+                    if(inputEstrella) inputEstrella.checked = true;
+                }
+            }
+
+            btnGuardar.addEventListener("click", () => {
+                const comentario = textarea.value.trim();
+                if (!comentario) return;
+                const estrellas = li.querySelector('input[name="rating-'+clave+'"]:checked');
+                const valorEstrellas = estrellas ? estrellas.value : 0;
+
+                const commentLi = document.createElement("li");
+                commentLi.innerHTML = `${comentario} <button class="borrarComentario">Eliminar</button>`;
+                comentariosLista.appendChild(commentLi);
+
+                if(!storageComentarios[clave]) storageComentarios[clave] = [];
+                storageComentarios[clave].push({texto: comentario, estrellas: valorEstrellas});
+                localStorage.setItem("comentariosEstrategias", JSON.stringify(storageComentarios));
+
+                const borrarBtn = commentLi.querySelector(".borrarComentario");
+                borrarBtn.addEventListener("click", () => {
+                    comentariosLista.removeChild(commentLi);
+                    const indexC = storageComentarios[clave].findIndex(cc => cc.texto === comentario && cc.estrellas === valorEstrellas);
+                    if (indexC > -1) {
+                        storageComentarios[clave].splice(indexC, 1);
+                        localStorage.setItem("comentariosEstrategias", JSON.stringify(storageComentarios));
+                    }
+                });
+
+                textarea.value = "";
+            });
+        });
+
+        window.scrollTo({ top: estrategiasPanel.offsetTop, behavior: 'smooth' });
+    }
+
+    const tipoGuardado = localStorage.getItem("tipoEmpresa");
+    if (tipoGuardado) {
+        tipoEmpresaSelect.value = tipoGuardado;
+        mostrarEstrategias(tipoGuardado);
+    }
+
+});
+</script>
+
+</body>
+</html>
